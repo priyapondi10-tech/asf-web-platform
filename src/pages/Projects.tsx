@@ -29,7 +29,7 @@ export function Projects() {
       <button className="button secondary" type="button" onClick={clear}>Clear filters</button>
     </div>
     <p className="muted" role="status">{filtered.length} of {projects.length} sample projects</p>
-    {filtered.length ? <section aria-label="Project results"><ProjectCards items={filtered} /></section> :
+    {filtered.length ? <section aria-labelledby="project-results"><h2 id="project-results" className="visually-hidden">Project results</h2><ProjectCards items={filtered} /></section> :
       <EmptyState title="No projects match" description="Try a different search or clear your filters."
         action={<button className="button" type="button" onClick={clear}>Show all projects</button>} />}
   </Page>;

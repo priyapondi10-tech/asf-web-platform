@@ -20,7 +20,7 @@ export function Help() {
     ))}</section> : <EmptyState title="No answers match" description="Try a simpler term or clear your search."
       action={<button className="button" type="button" onClick={() => setQuery('')}>Clear search</button>} />}
     <Card title="Project documentation"><ul className="link-list">
-      <li><a href="https://github.com/priyapondi10-tech/asf-web-platform# getting-started" onClick={undefined}>Setup documentation</a></li>
+      <li><a href="https://github.com/priyapondi10-tech/asf-web-platform#getting-started">Setup documentation</a></li>
       <li><a href="https://github.com/priyapondi10-tech/asf-web-platform/blob/main/docs/UX_ROADMAP.md">View UX roadmap</a></li>
     </ul></Card>
   </Page>;
