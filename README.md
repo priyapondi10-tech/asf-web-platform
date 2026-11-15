@@ -6,12 +6,13 @@ A React + TypeScript + Vite frontend starter with shared desktop/mobile navigati
 
 ## Getting started
 
-Use Node.js **22.12+** (Node 22 LTS recommended) and npm.
+Use Node.js **22.12+** (Node 22 LTS recommended) and **npm 11**. CI validates this combination. An npm 10 resolver crash (`Cannot read properties of null (reading 'edgesOut')`) was observed with the patched dependency graph; use npm 11 rather than bypassing peer or security checks.
 
 ```sh
 git clone https://github.com/priyapondi10-tech/asf-web-platform.git
 cd asf-web-platform
 nvm use                 # optional, if nvm is installed
+npm install --global npm@11  # if npm 11 is not already installed
 npm install
 npm run dev
 ```
@@ -23,10 +24,11 @@ npm run typecheck       # strict TypeScript checks
 npm test                # Vitest + Testing Library component tests
 npm run build           # typecheck and production bundle in dist/
 npm run preview         # inspect the production bundle locally
-npm run check           # all automated checks
+npm run check           # all automated application checks
+npm audit --audit-level=high  # dependency security gate used by CI
 ```
 
-Direct dependencies are pinned. Review dependency updates and commit a generated npm lockfile when changing the dependency graph. GitHub Actions runs checks on pushes and pull requests; it does not deploy.
+Direct dependencies are pinned. Review dependency updates and commit a generated npm lockfile when changing the dependency graph. GitHub Actions runs application checks and the dependency audit on pushes and pull requests; it does not deploy. CI actions are pinned to reviewed commit SHAs and receive read-only repository permissions.
 
 ## Screen inventory
 
@@ -55,6 +57,7 @@ src/
   test/              Test environment setup
   App.tsx            Route composition and fallback
   App.test.tsx       Route and interaction smoke tests
+  navigation.test.tsx Navigation and recovery regression tests
   navigation.ts      Single navigation configuration
   styles.css         Responsive design tokens and component styles
 docs/

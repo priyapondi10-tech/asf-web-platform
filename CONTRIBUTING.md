@@ -4,8 +4,8 @@
 
 1. Pick a linked issue from [the UX roadmap](docs/UX_ROADMAP.md); agree the acceptance criteria before implementing.
 2. Create a focused branch. Keep sample fixtures deterministic and separate from future API adapters.
-3. Install with Node 22.12+ and `npm install`; review and commit the generated lockfile with dependency changes.
-4. Run `npm run check` and add tests for changed behavior.
+3. Use Node 22.12+ and npm 11 (`npm install --global npm@11` if needed), then `npm install`. npm 10 produced an `edgesOut` resolver crash with this graph; do not bypass peer validation. Review and commit the generated lockfile with dependency changes.
+4. Run `npm run check` and `npm audit --audit-level=high`; add tests for changed behavior. A passing audit is a point-in-time advisory check, not a security certification.
 5. Open a pull request with screenshots, a screen/state inventory, keyboard notes, and issue references. Do not close UX issues solely because the scaffold exists.
 
 ## Manual review before release
