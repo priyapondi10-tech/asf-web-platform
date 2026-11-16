@@ -1,14 +1,21 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
-import { navigation, routeLabel } from '../navigation';
+import { Link, useLocation } from 'react-router-dom';
+import { getRouteInfo, navigation, paths } from '../navigation';
+
+function SiteLogo({ compact = false }: { compact?: boolean }) {
+  return <Link className={`brand${compact ? ' brand-compact mobile-only' : ''}`} to={paths.home} aria-label="ASF home">
+    ASF{!compact && <span>Web platform</span>}
+  </Link>;
+}
 
 function Navigation({ onNavigate }: { onNavigate?: () => void }) {
+  const { activePath } = getRouteInfo(useLocation().pathname);
   return <ul className="nav-list">{navigation.map((item) => (
     <li key={item.to}>
-      <NavLink to={item.to} end={item.to === '/'} onClick={onNavigate}
-        className={({ isActive }) => `nav-link${isActive ? ' is-active' : ''}`}>
+      <Link to={item.to} onClick={onNavigate} aria-current={item.to === activePath ? 'page' : undefined}
+        className={`nav-link${item.to === activePath ? ' is-active' : ''}`}>
         <span className="nav-mark" aria-hidden="true">{item.mark}</span>{item.label}
-      </NavLink>
+      </Link>
     </li>
   ))}</ul>;
 }
@@ -19,8 +26,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const mainRef = useRef<HTMLElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [announcement, setAnnouncement] = useState('');
-  const label = routeLabel(location.pathname);
-  const isDetail = location.pathname.startsWith('/projects/');
+  const { label, breadcrumbs } = getRouteInfo(location.pathname, location.state?.from);
 
   function closeMenu() { dialogRef.current?.close(); }
   function openMenu() {
@@ -54,19 +60,22 @@ export function AppShell({ children }: { children: ReactNode }) {
         mainRef.current?.focus();
       }}>Skip to main content</a>
       <aside className="sidebar" aria-label="Workspace sidebar">
-        <Link className="brand" to="/">ASF<span>Web platform</span></Link>
+        <SiteLogo />
         <nav aria-label="Primary"><Navigation /></nav>
         <p className="sidebar-note">A clearer place to move work forward.<br />Frontend starter · v0.1</p>
       </aside>
       <div className="workspace">
-        <header className="topbar">
+        <header className="topbar" aria-label="Workspace header">
+          <SiteLogo compact />
           <button className="button secondary mobile-only" type="button" onClick={openMenu}
             aria-label="Open navigation" aria-controls="mobile-navigation" aria-expanded={menuOpen}>Menu</button>
           <nav aria-label="Breadcrumb">
             <ol className="breadcrumbs">
-              <li><Link to="/">ASF</Link></li>
-              {isDetail && <li><Link to="/projects">Projects</Link></li>}
-              <li aria-current="page">{label}</li>
+              {breadcrumbs.map((item) => (
+                <li key={item.to ?? 'current'} aria-current={item.to ? undefined : 'page'}>
+                  {item.to ? <Link to={item.to}>{item.label}</Link> : item.label}
+                </li>
+              ))}
             </ol>
           </nav>
           <span className="workspace-label">Demo workspace</span>
@@ -74,7 +83,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <main id="main-content" className="main-content" tabIndex={-1} ref={mainRef}>
           <p className="demo-banner">Sample data only. No account or server storage is connected.</p>
           {children}
-          <footer className="page-footer">ASF frontend starter · <Link to="/help">Help and demo limits</Link></footer>
+          <footer className="page-footer">ASF frontend starter · <Link to={paths.help}>Help and demo limits</Link></footer>
         </main>
       </div>
       <dialog id="mobile-navigation" className="mobile-menu" ref={dialogRef}

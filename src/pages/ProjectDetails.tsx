@@ -1,18 +1,17 @@
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { Page, Card, EmptyState, StatusBadge } from '../components/ui';
 import { projects } from '../data/demo';
+import { paths, projectsReturnPath } from '../navigation';
 
 export function ProjectDetails() {
   const { projectId } = useParams();
   const location = useLocation();
   const project = projects.find((item) => item.id === projectId);
-  const proposedFrom: unknown = location.state?.from;
-  const backTo = typeof proposedFrom === 'string' &&
-    (proposedFrom === '/projects' || proposedFrom.startsWith('/projects?')) ? proposedFrom : '/projects';
+  const backTo = projectsReturnPath(location.state?.from);
 
   if (!project) return <Page title="Project not found" description="This sample project does not exist.">
     <EmptyState title="Choose another project" description="Use the sample project list to continue."
-      action={<Link className="button" to="/projects">Browse projects</Link>} />
+      action={<Link className="button" to={backTo}>Browse projects</Link>} />
   </Page>;
 
   return <Page title={project.name} description={project.description}
@@ -30,7 +29,7 @@ export function ProjectDetails() {
     </div>
     <Card title="What comes next?">
       <p>Editing, members, files, and real project data require approved product, API, and permission contracts. They are intentionally not wired into this starter.</p>
-      <Link to="/help">Understand the demo limits</Link>
+      <Link to={paths.help}>Understand the demo limits</Link>
     </Card>
   </Page>;
 }
